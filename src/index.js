@@ -251,19 +251,13 @@ export default function convert(joi,transformer=null) {
     schema['default'] = joi._flags.default;
   }
 
-  if (joi._valids && joi._valids._set && joi._valids._set.length){
-    if(Array.isArray(joi._inner.children)) {
-      return {
-        '------oneOf': [
-          {
-            'type': joi._type,
-            'enum': joi._valids._set
-          },
-          TYPES[joi._type](schema, joi, transformer)
-        ]
-      };
-    }
-    schema['enum']=joi._valids._set;
+  if (joi._valids && joi._valids._set && joi._valids._set.size) {
+    let values = [];
+    joi._valids._set.forEach((value) => {
+      values.push(value);
+    })
+
+    schema['enum'] = values;
   }
 
   let result = TYPES[joi._type](schema, joi, transformer);
